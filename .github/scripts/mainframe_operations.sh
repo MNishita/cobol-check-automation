@@ -1,78 +1,69 @@
 #!/bin/bash
-# mainframe_operations.sh
+set -e
 
-# Set up environment
+echo "Starting mainframe_operations.sh"
+
+# Set up environment on z/OS USS
 export PATH=$PATH:/usr/lpp/java/J8.0_64/bin
 export JAVA_HOME=/usr/lpp/java/J8.0_64
 export PATH=$PATH:/usr/lpp/zowe/cli/node/bin
 
-# Check Java availability
+echo "Checking Java..."
 java -version
 
-# Set ZOWE_USERNAME
-ZOWE_USERNAME="Z88453"
+if [ -z "$ZOWE_USERNAME" ]; then
+  echo "ERROR: ZOWE_USERNAME is empty"
+  exit 1
+fi
 
-# Go to COBOL Check directory
-cd cobolcheck || {
-  echo "ERROR: cobolcheck directory not found"
+LOWERCASE_USERNAME=$(echo "$ZOWE_USERNAME" | tr '[:upper:]' '[:lower:]')
+
+echo "Going to COBOL Check directory..."
+cd "/z/$LOWERCASE_USERNAME/cobolcheck/cobol-check" || {
+  echo "ERROR: Could not find /z/$LOWERCASE_USERNAME/cobolcheck/cobol-check"
   exit 1
 }
 
-echo "Changed to $(pwd)"
+echo "Current directory:"
+pwd
 ls -al
 
-# Make cobolcheck executable
-chmod +x cobolcheck
-echo "Made cobolcheck executable"
+echo "Checking COBOL Check files..."
+find . -maxdepth 3 -type f | head -50
 
-# Make test runner executable
-cd scripts || {
-  echo "ERROR: scripts directory not found"
-  exit 1
-}
+echo "Making cobolcheck executable..."
+chmod +x cobolcheck || true
 
-chmod +x linux_gnucobol_run_tests
-echo "Made linux_gnucobol_run_tests executable"
+echo "Making test runner executable..."
+chmod +x scripts/linux_gnucobol_run_tests || true
 
-cd ..
-
-#Function to run cobolcheck and copy files
 run_cobolcheck() {
   program=$1
+  echo "======================================"
   echo "Running COBOL Check for $program"
-  
-  ./cobolcheck -p "$program"
-  
-  echo "COBOL Check execution completed for $program"
-  
-  # Copy generated COBOL file to your CBL PDS
+  echo "======================================"
+
+  ./cobolcheck -p "$program" || true
+
+  echo "COBOL Check finished for $program"
+
   if [ -f "CC##99.CBL" ]; then
+    echo "Found CC##99.CBL. Copying to ${ZOWE_USERNAME}.CBL(${program})..."
     cp CC##99.CBL "//'${ZOWE_USERNAME}.CBL(${program})'"
-
-    if [ $? -eq 0 ]; then
-      echo "Copied CC##99.CBL to ${ZOWE_USERNAME}.CBL(${program})"
-    else
-      echo "ERROR: Failed to copy CC##99.CBL to ${ZOWE_USERNAME}.CBL(${program})"
-    fi
+    echo "Copied CC##99.CBL to ${ZOWE_USERNAME}.CBL(${program})"
   else
-    echo "ERROR: CC##99.CBL not found for $program"
+    echo "WARNING: CC##99.CBL not found for $program"
   fi
-  
-# Copy the JCL file if it exists
-if [ -f "${program}.JCL" ]; then
-  cp "${program}.JCL" "//'${ZOWE_USERNAME}.JCL(${program})'";
 
-  if [ $? -eq 0 ]; then
+  if [ -f "${program}.JCL" ]; then
+    echo "Found ${program}.JCL. Copying to ${ZOWE_USERNAME}.JCL(${program})..."
+    cp "${program}.JCL" "//'${ZOWE_USERNAME}.JCL(${program})'"
     echo "Copied ${program}.JCL to ${ZOWE_USERNAME}.JCL(${program})"
   else
-    echo "Failed to copy ${program}.JCL to ${ZOWE_USERNAME}.JCL(${program})"
+    echo "WARNING: ${program}.JCL not found"
   fi
-else
-  echo "${program}.JCL not found"
-fi
 }
 
-#Run for each program
 for program in NUMBERS EMPPAY DEPTPAY
 do
   run_cobolcheck "$program"
