@@ -54,6 +54,14 @@ run_cobolcheck() {
   else
     echo "WARNING: testruns/CC##99.CBL not found for $program"
   fi
+
+  if [ -f "../${program}.JCL" ]; then
+    echo "Found ${program}.JCL. Uploading to ${ZOWE_USERNAME}.JCL(${program})..."
+    zowe zos-files upload file-to-data-set "../${program}.JCL" "${ZOWE_USERNAME}.JCL(${program})"
+    echo "Uploaded ${program}.JCL to ${ZOWE_USERNAME}.JCL(${program})"
+  else
+    echo "WARNING: ../${program}.JCL not found"
+  fi
 }
 
 for program in NUMBERS ALPHA
