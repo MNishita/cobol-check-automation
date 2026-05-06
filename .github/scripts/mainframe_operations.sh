@@ -47,10 +47,12 @@ run_cobolcheck() {
 
   echo "COBOL Check completed for $program"
 
-  if [ -f "CC##99.CBL" ]; then
-    echo "Found CC##99.CBL for $program"
+  if [ -f "testruns/CC##99.CBL" ]; then
+    echo "Found testruns/CC##99.CBL for $program"
+    cp testruns/CC##99.CBL "//'${ZOWE_USERNAME}.CBL(${program})'"
+    echo "Copied generated COBOL to ${ZOWE_USERNAME}.CBL(${program})"
   else
-    echo "WARNING: CC##99.CBL not found for $program"
+    echo "WARNING: testruns/CC##99.CBL not found for $program"
   fi
 }
 
