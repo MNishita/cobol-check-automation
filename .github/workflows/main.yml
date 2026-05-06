@@ -36,6 +36,12 @@ jobs:
         distribution: 'temurin'
         java-version: '11'
 
+    - name: Install GnuCOBOL
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gnucobol
+        cobc -V
+
     - name: Setup Mainframe Environment and Upload COBOL Check
       run: |
         chmod +x .github/scripts/zowe_operations.sh
