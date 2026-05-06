@@ -28,7 +28,7 @@ timeout 60 zowe zos-files list uss-files "/z/$LOWERCASE_USERNAME" || {
   exit 1
 }
 
-echo "Checking if USS directory exists..."
+echo "Checking if USS dįrectory exists..."
 if ! timeout 60 zowe zos-files list uss-files "/z/$LOWERCASE_USERNAME/cobolcheck" &>/dev/null; then
   echo "Directory does not exist. Creating it..."
   timeout 60 zowe zos-files create uss-directory "/z/$LOWERCASE_USERNAME/cobolcheck"
@@ -43,3 +43,4 @@ echo "Verifying upload..."
 timeout 60 zowe zos-files list uss-files "/z/$LOWERCASE_USERNAME/cobolcheck"
 
 echo "zowe_operations.sh completed successfully"
+
