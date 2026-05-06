@@ -49,8 +49,8 @@ run_cobolcheck() {
 
   if [ -f "testruns/CC##99.CBL" ]; then
     echo "Found testruns/CC##99.CBL for $program"
-    cp testruns/CC##99.CBL "//'${ZOWE_USERNAME}.CBL(${program})'"
-    echo "Copied generated COBOL to ${ZOWE_USERNAME}.CBL(${program})"
+    zowe zos-files upload file-to-data-set "testruns/CC##99.CBL" "${ZOWE_USERNAME}.CBL(${program})"
+    echo "Uploaded generated COBOL to ${ZOWE_USERNAME}.CBL(${program})"
   else
     echo "WARNING: testruns/CC##99.CBL not found for $program"
   fi
