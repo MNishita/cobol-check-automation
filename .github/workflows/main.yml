@@ -31,9 +31,10 @@ jobs:
     - name: Setup Mainframe Environment and Upload COBOL Check
       env:
         ZOWE_USERNAME: ${{ secrets.ZOWE_USERNAME }}
-        ZOWE_PASSWORD: ${{ secrets.ZOWE_PASSWORD }}
-        ZOWE_HOST: ${{ secrets.ZOWE_HOST }}
-        ZOWE_PORT: ${{ secrets.ZOWE_PORT }}
+        ZOWE_OPT_USER: ${{ secrets.ZOWE_USERNAME }}
+        ZOWE_OPT_PASSWORD: ${{ secrets.ZOWE_PASSWORD }}
+        ZOWE_OPT_HOST: ${{ secrets.ZOWE_HOST }}
+        ZOWE_OPT_PORT: ${{ secrets.ZOWE_PORT }}
         ZOWE_OPT_REJECT_UNAUTHORIZED: false
       run: |
         chmod +x .github/scripts/zowe_operations.sh
