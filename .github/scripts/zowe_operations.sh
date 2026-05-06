@@ -37,7 +37,7 @@ else
 fi
 
 echo "Uploading COBOL Check files..."
-timeout 300 zowe zos-files upload dir-to-uss "./cobol-check" "/z/$LOWERCASE_USERNAME/cobolcheck" --recursive --binary-files "cobol-check-0.2.9.jar"
+timeout 300 zowe zos-files upload dir-to-uss "./cobol-check" "/z/$LOWERCASE_USERNAME/cobolcheck" --recursive --binary-files "cobol-check-0.2.19.jar"
 
 echo "Verifying upload..."
 timeout 60 zowe zos-files list uss-files "/z/$LOWERCASE_USERNAME/cobolcheck"
