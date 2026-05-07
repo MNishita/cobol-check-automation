@@ -64,7 +64,7 @@ run_cobolcheck() {
   fi
 }
 
-for program in NUMBERS EMPPAY
+for program in EMPPAY DEPTPAY
 do
   run_cobolcheck "$program"
 done
